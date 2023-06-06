@@ -12,8 +12,9 @@ const authorSchema = new mongoose.Schema({
     lowercase: true,
     unique: true,
   },
+  blogs: [{ type: String, ref: "blog"}] , //// added a blog ref
   createdAt: { type: Date, default: Date.now },
 });
 
-const Author = mongoose.model("Author", authorSchema);
+const Author = mongoose.model("author", authorSchema);
 module.exports = Author;

@@ -4,7 +4,7 @@ const Author = require("../model/Author");
 const getAllAuthors = async (req, res) => {
   // http://localhost:3000/authors/all-authors
   try {
-    const allAuthors = await Author.find({});
+    const allAuthors = await Author.find({}).populate('blogs'); // added populate
     if (allAuthors.length === 0) {
       return res
         .status(400)

@@ -1,10 +1,11 @@
 const { json } = require("express");
 const Blog = require("../model/Blog");
+const Author = require("../model/Author"); // added author model
 
 const getAllBlogs = async (req, res) => {
   // http://localhost:3000/blogs/get-all
   try {
-    const allBlogs = await Blog.find({});
+    const allBlogs = await Blog.find({}).populate( "owner" );
     if (allBlogs.length === 0) {
       res.status(400).json({ success: true, message: "empty no blogs" });
     }
@@ -17,7 +18,14 @@ const getAllBlogs = async (req, res) => {
 const createBlog = async (req, res) => {
   // http://localhost:3000/blogs/new-blog
   try {
+    const { owner } = req.body;
     const newBlog = await new Blog(req.body);
+
+    const updateAuthor = await Author.findOneAndUpdate( // added updateAuthor
+      { _id: owner },
+      { $push: { blogs: newBlog._id } }
+    )
+    await updateAuthor.save(); //// saved it 
     const saveBlog = await newBlog.save();
     res.status(200).json({ success: true, data: saveBlog });
   } catch (error) {
